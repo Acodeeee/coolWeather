@@ -1,5 +1,6 @@
 package com.autocompletedemo.wrf_mac.coolweather;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Build;
@@ -21,6 +22,7 @@ import android.widget.Toast;
 
 import com.autocompletedemo.wrf_mac.coolweather.gson.Forecast;
 import com.autocompletedemo.wrf_mac.coolweather.gson.Weather;
+import com.autocompletedemo.wrf_mac.coolweather.service.AutoUpdateService;
 import com.autocompletedemo.wrf_mac.coolweather.util.HttpUtil;
 import com.autocompletedemo.wrf_mac.coolweather.util.Utility;
 import com.bumptech.glide.Glide;
@@ -220,6 +222,10 @@ public class WeatherActivity extends AppCompatActivity {
         sportText.setText(sport);
 
         weatherLayout.setVisibility(View.VISIBLE);
+
+        //启动AutoUpdateService服务
+        Intent intent = new Intent(this, AutoUpdateService.class);
+        startService(intent);
     }
 
     private void loadBingPic(){
