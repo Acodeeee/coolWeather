@@ -5,6 +5,8 @@ import android.text.TextUtils;
 import com.autocompletedemo.wrf_mac.coolweather.db.City;
 import com.autocompletedemo.wrf_mac.coolweather.db.County;
 import com.autocompletedemo.wrf_mac.coolweather.db.Province;
+import com.autocompletedemo.wrf_mac.coolweather.gson.Weather;
+import com.google.gson.Gson;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -43,6 +45,7 @@ public class Utility {
     /**
      * 解析和处理从服务器返回的市级信息
      * @param response
+     * @param provinceId
      * @return
      */
     public static boolean handleCityResponse(String response, int provinceId){
@@ -66,6 +69,12 @@ public class Utility {
         return false;
     }
 
+    /**
+     * 解析和处理从服务器返回的县级信息
+     * @param response
+     * @param cityId
+     * @return
+     */
     public static boolean handleCountyResponse(String response, int cityId){
         if (!TextUtils.isEmpty(response)){
             try {
@@ -84,5 +93,16 @@ public class Utility {
             }
         }
         return false;
+    }
+    public static Weather handleWeatherResponse(String response){
+        try {
+            JSONObject jsonObject = new JSONObject(response);
+            JSONArray jsonArray = jsonObject.getJSONArray("HeWeather");
+            String weaherContent = jsonArray.getJSONObject(0).toString();
+            return new Gson().fromJson(weaherContent, Weather.class);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }

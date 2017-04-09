@@ -1,6 +1,7 @@
 package com.autocompletedemo.wrf_mac.coolweather;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -95,6 +96,21 @@ public class ChoseAreaFragment extends Fragment {
                     case LEVEL_CITY:
                         selectedCity = cityList.get(position);
                         queryCounty();
+                        break;
+                    case LEVEL_COUNTY:
+                        String weatherId = countyList.get(position).getWeatherId();
+                        if (getActivity() instanceof MainActivity)//instanceof可以判断当前Activity是否属于MainActivity实例
+                        {
+                            Intent intent = new Intent(getActivity(), WeatherActivity.class);
+                            intent.putExtra("weather_id", weatherId);
+                            startActivity(intent);
+                            getActivity().finish();
+                        }else if (getActivity() instanceof WeatherActivity){
+                            WeatherActivity activity = (WeatherActivity) getActivity();
+                            activity.drawerLayout.closeDrawers();//关闭滑动菜单
+                            activity.swipeRefreshLayout.setRefreshing(true);//显示下拉刷新
+                            activity.requestWeather(weatherId);//请求新的天气信息
+                        }
                         break;
                     default:
                 }
