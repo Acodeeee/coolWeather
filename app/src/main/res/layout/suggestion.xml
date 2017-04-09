@@ -13,6 +13,10 @@
         android:text="生活建议"
         android:textColor="#fff"
         android:textSize="20sp"/>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#9000"/>
     <TextView
         android:id="@+id/comfort_text"
         android:layout_width="wrap_content"

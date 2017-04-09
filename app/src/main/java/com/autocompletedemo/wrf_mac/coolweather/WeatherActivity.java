@@ -33,6 +33,8 @@ import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.Response;
 
+import static com.autocompletedemo.wrf_mac.coolweather.util.Utility.handleWeatherResponse;
+
 public class WeatherActivity extends AppCompatActivity {
 
     //定义控件
@@ -86,17 +88,15 @@ public class WeatherActivity extends AppCompatActivity {
         swipeRefreshLayout.setColorSchemeResources(R.color.colorPrimary);
 
 
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        final SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
         String weatherString = preferences.getString("weather", null);
-        final String weatherId;
         if (weatherString != null){
             //SharedPreferences中有数据则直接显示解析显示天气信息
-            Weather weather = Utility.handleWeatherResponse(weatherString);
-            weatherId = weather.basic.weatherId;
+            Weather weather = handleWeatherResponse(weatherString);
             showWeatherInfo(weather);
         }else {
             //SharedPreferences中无数据则从服务器查询天气
-            weatherId = getIntent().getStringExtra("weather_id");
+            String weatherId = getIntent().getStringExtra("weather_id");
             weatherLayout.setVisibility(View.INVISIBLE);
             requestWeather(weatherId);
         }
@@ -118,6 +118,9 @@ public class WeatherActivity extends AppCompatActivity {
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
+                String weatherString = preferences.getString("weather", null);
+                Weather weather = Utility.handleWeatherResponse(weatherString);
+                String weatherId = weather.basic.weatherId;
                 requestWeather(weatherId);
             }
         });
@@ -147,7 +150,7 @@ public class WeatherActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 final String responseText = response.body().string();//获取服务器返回的信息
-                final Weather weather = Utility.handleWeatherResponse(responseText);//解析服务器返回的信息，用于判断服务器返回的信息是否正确和传参
+                final Weather weather = handleWeatherResponse(responseText);//解析服务器返回的信息，用于判断服务器返回的信息是否正确和传参
 
                 runOnUiThread(new Runnable() {
                     @Override
@@ -210,6 +213,9 @@ public class WeatherActivity extends AppCompatActivity {
         if (weather.aqi != null){
             aqiText.setText(weather.aqi.city.aqi);
             pm25Text.setText(weather.aqi.city.pm25);
+        }else {
+            aqiText.setText("无");
+            pm25Text.setText("无");
         }
 
         //设置建议信息

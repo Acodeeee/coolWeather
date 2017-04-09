@@ -110,6 +110,7 @@ public class ChoseAreaFragment extends Fragment {
                             activity.drawerLayout.closeDrawers();//关闭滑动菜单
                             activity.swipeRefreshLayout.setRefreshing(true);//显示下拉刷新
                             activity.requestWeather(weatherId);//请求新的天气信息
+                            getActivity().finish();
                         }
                         break;
                     default:
